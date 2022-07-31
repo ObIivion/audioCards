@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A30204A42896DD7F0037D26C /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30204A32896DD7F0037D26C /* Collection.swift */; };
 		A37342ED2893EC5F0050A7F5 /* AudioStoriesViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37342EC2893EC5F0050A7F5 /* AudioStoriesViewCell.swift */; };
 		A37342EF2893F2E50050A7F5 /* BaseViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37342EE2893F2E50050A7F5 /* BaseViewCell.swift */; };
 		A3D62978289169EA0002D99C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D62977289169EA0002D99C /* AppDelegate.swift */; };
@@ -31,6 +32,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A30204A32896DD7F0037D26C /* Collection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
 		A37342EC2893EC5F0050A7F5 /* AudioStoriesViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioStoriesViewCell.swift; sourceTree = "<group>"; };
 		A37342EE2893F2E50050A7F5 /* BaseViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewCell.swift; sourceTree = "<group>"; };
 		A3D62974289169EA0002D99C /* SaysomeDemo_2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SaysomeDemo_2.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -173,6 +175,7 @@
 			isa = PBXGroup;
 			children = (
 				A3D629B0289177260002D99C /* Bundle.swift */,
+				A30204A32896DD7F0037D26C /* Collection.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -267,6 +270,7 @@
 				A3D6297C289169EA0002D99C /* ViewController.swift in Sources */,
 				A3D629B1289177260002D99C /* Bundle.swift in Sources */,
 				A3D629A728916C8F0002D99C /* AudioStoriesViewFlowLayout.swift in Sources */,
+				A30204A42896DD7F0037D26C /* Collection.swift in Sources */,
 				A3D62978289169EA0002D99C /* AppDelegate.swift in Sources */,
 				A37342EF2893F2E50050A7F5 /* BaseViewCell.swift in Sources */,
 				A3D6297A289169EA0002D99C /* SceneDelegate.swift in Sources */,

@@ -45,8 +45,6 @@ class AudioStoriesViewCell: BaseViewCell {
         addSubview(indicatorLabelWhite)
         setupConstraints()
         
-        
-           
     }
     
     private func createGradientLayer() {
@@ -94,7 +92,8 @@ class AudioStoriesViewCell: BaseViewCell {
         indicatorLabelWhite.layer.beginTime = 0
     }
     
-    func startAnimation(audioPlayer: AVAudioPlayer?){
+    func startAnimation(audioPlayer: AVAudioPlayer?) {
+        
         isAnimationStarted = true
         self.layoutIfNeeded()
         UIView.animate(withDuration: audioPlayer!.duration, animations: {
