@@ -12,9 +12,9 @@ class ViewController: BaseViewController<AudioStoriesView> {
     
     var audioCards: [AudioCardsModel] = []
     
-    var audioPlayer = AVAudioPlayer()
+    private var audioPlayer = AVAudioPlayer()
     
-    var currentCell = AudioStoriesViewCell()
+    private var currentCell = AudioStoriesViewCell()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,10 +26,9 @@ class ViewController: BaseViewController<AudioStoriesView> {
         mainView.audioCardsCollectionView.delegate = self
         mainView.audioCardsCollectionView.dataSource = self
         mainView.audioCardsCollectionView.register(AudioStoriesViewCell.self, forCellWithReuseIdentifier: AudioStoriesViewCell.identifier)
-    
     }
     
-    func setupAudioPlayer(for url: URL) {
+    private func setupAudioPlayer(for url: URL) {
         
         let audioSession = AVAudioSession.sharedInstance()
         
@@ -66,17 +65,25 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
             currentCell = cell
             setupAudioPlayer(for: currentCell.audioFile)
         }
+        
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        if audioPlayer.isPlaying {
-            audioPlayer.pause()
-            currentCell.pauseAnimation()
-        } else {
+        if !currentCell.isAnimationStarted {
+            setupAudioPlayer(for: currentCell.audioFile)
+            currentCell.prepareForAnimation()
+            currentCell.startAnimation(audioPlayer: audioPlayer)
             audioPlayer.play()
-            currentCell.resumeAnimation()
+        } else {
+            if audioPlayer.isPlaying {
+                audioPlayer.pause()
+                currentCell.pauseAnimation()
+            } else {
+                audioPlayer.play()
+                currentCell.resumeAnimation()
+            }
         }
     }
 }
@@ -97,11 +104,8 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
 
                 setupAudioPlayer(for: currentCell.audioFile)
                 audioPlayer.play()
-                
-                currentCell.layoutIfNeeded()
                 currentCell.prepareForAnimation()
                 currentCell.startAnimation(audioPlayer: audioPlayer)
-                currentCell.layoutIfNeeded()
             }
         }
     }

@@ -12,6 +12,8 @@ class AudioStoriesViewCell: BaseViewCell {
     
     static let identifier = "Audio Cell"
     
+    private(set) var isAnimationStarted = false
+    
     private let viewMask = UIView()
     private let gradient = CAGradientLayer()
     
@@ -93,22 +95,25 @@ class AudioStoriesViewCell: BaseViewCell {
     }
     
     func startAnimation(audioPlayer: AVAudioPlayer?){
-        
+        isAnimationStarted = true
         self.layoutIfNeeded()
-        UIView.animate(withDuration: (audioPlayer?.duration)!, animations: {
+        UIView.animate(withDuration: audioPlayer!.duration, animations: {
             self.viewMask.frame = CGRect(x: self.indicatorLabelWhite.bounds.origin.x, y: self.indicatorLabelWhite.bounds.origin.y, width: self.indicatorLabelWhite.bounds.size.width, height: self.indicatorLabelWhite.bounds.size.height)
-        }, completion: nil)
+        }, completion: {_ in 
+            self.prepareForAnimation()
+            self.isAnimationStarted = false
+        })
         self.layoutIfNeeded()
     }
     
     func resumeAnimation(){
+        
         let pausedTime = indicatorLabelWhite.layer.timeOffset
         indicatorLabelWhite.layer.timeOffset = pausedTime
         indicatorLabelWhite.layer.speed = 1
         indicatorLabelWhite.layer.beginTime = 0
         let timeSincePause = indicatorLabelWhite.layer.convertTime(CACurrentMediaTime(), from: nil) - pausedTime
         indicatorLabelWhite.layer.beginTime = timeSincePause
-        
     }
     
     func pauseAnimation(){

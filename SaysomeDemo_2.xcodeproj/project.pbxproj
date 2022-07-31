@@ -156,6 +156,7 @@
 		A3D6299528916BE90002D99C /* Resourses */ = {
 			isa = PBXGroup;
 			children = (
+				A3D629AE2891727F0002D99C /* Resourses.swift */,
 				A3D629AD289172740002D99C /* Files */,
 				A3D6299728916C0D0002D99C /* Splinter.mp3 */,
 				A3D6299A28916C0D0002D99C /* 2 tipes of people.mp3 */,
@@ -164,7 +165,6 @@
 				A3D6299C28916C0D0002D99C /* LuciqueII - pressure.mp3 */,
 				A3D6299828916C0D0002D99C /* LuciqueII - Nein.mp3 */,
 				A3D6299928916C0D0002D99C /* zalagasper - Sebi.mp3 */,
-				A3D629AE2891727F0002D99C /* Resourses.swift */,
 			);
 			path = Resourses;
 			sourceTree = "<group>";
