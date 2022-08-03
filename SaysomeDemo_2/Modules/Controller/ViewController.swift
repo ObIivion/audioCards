@@ -8,7 +8,9 @@
 import UIKit
 import AVFoundation
 
-class ViewController: BaseViewController<AudioStoriesView> {
+class ViewController: BaseViewController<AudioStoriesView>, ProgressCellDelegate {
+    
+    var progress: Double = 0.0
     
     var audioCards: [AudioCardsModel] = []
     
@@ -43,6 +45,19 @@ class ViewController: BaseViewController<AudioStoriesView> {
             print("Unable to activate audio session:  \(error.localizedDescription)")
         }
     }
+    
+    func updateTime(){
+        
+        if audioPlayer.isPlaying {
+            
+            progress = audioPlayer.currentTime / audioPlayer.duration
+            currentCell.updateMask()
+            print("progress updated: \(progress * 100)" )
+            DispatchQueue.main.async { [weak self] in
+                self?.updateTime()
+            }
+        }
+    }
 }
 
 extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -59,10 +74,11 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AudioStoriesViewCell.identifier, for: indexPath) as! AudioStoriesViewCell
         
-        cell.prepareForAnimation()
+        cell.prepareMask()
         cell.setModel(model: audioCards[indexPath.item])
         if indexPath.section == 0 && indexPath.item == 0 {
             currentCell = cell
+            currentCell.delegate = self
             setupAudioPlayer(for: currentCell.audioFile)
         }
         
@@ -71,19 +87,15 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        if !currentCell.isAnimationStarted {
-            setupAudioPlayer(for: currentCell.audioFile)
-            currentCell.prepareForAnimation()
-            currentCell.startAnimation(audioPlayer: audioPlayer)
+        if !audioPlayer.isPlaying  {
             audioPlayer.play()
+            updateTime()
+            print("resume animation")
         } else {
-            if audioPlayer.isPlaying {
-                audioPlayer.pause()
-                currentCell.pauseAnimation()
-            } else {
-                audioPlayer.play()
-                currentCell.resumeAnimation()
-            }
+            audioPlayer.pause()
+            
+            print("pause animation")
+            print(progress * 100)
         }
     }
 }
@@ -92,22 +104,24 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         
-        audioPlayer.stop()
-        
         let myCollection = scrollView as! UICollectionView
         
         let centerXofVisibleCells = myCollection.contentOffset.x + myCollection.frame.size.width / 2
         myCollection.visibleCells.forEach { cell in
 
             if cell.frame.midX - centerXofVisibleCells < 1 && cell.frame.midX - centerXofVisibleCells > -1 {
-                self.currentCell = cell as! AudioStoriesViewCell
-
+                currentCell = cell as! AudioStoriesViewCell
+                currentCell.delegate = self
                 setupAudioPlayer(for: currentCell.audioFile)
                 audioPlayer.play()
-                currentCell.prepareForAnimation()
-                currentCell.startAnimation(audioPlayer: audioPlayer)
+                updateTime()
             }
         }
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        currentCell.prepareMask()
+        audioPlayer.pause()
     }
 }
 

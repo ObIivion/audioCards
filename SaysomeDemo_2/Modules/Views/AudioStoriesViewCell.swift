@@ -8,11 +8,18 @@
 import UIKit
 import AVFoundation
 
+protocol ProgressCellDelegate {
+    
+    func updateTime()
+    var progress: Double {get set}
+    
+}
+
 class AudioStoriesViewCell: BaseViewCell {
     
-    static let identifier = "Audio Cell"
+    var delegate: ProgressCellDelegate?
     
-    private(set) var isAnimationStarted = false
+    static let identifier = "Audio Cell"
     
     private let viewMask = UIView()
     private let gradient = CAGradientLayer()
@@ -76,7 +83,19 @@ class AudioStoriesViewCell: BaseViewCell {
         
     }
     
-    func prepareForAnimation() {
+    func updateMask() {
+        
+        guard let unwrappedDelegate = delegate else {return}
+        
+        let newFrameWidth = indicatorLabelWhite.bounds.size.width * unwrappedDelegate.progress
+        
+        self.viewMask.frame = CGRect(x: self.indicatorLabelWhite.bounds.origin.x,
+                                     y: self.indicatorLabelWhite.bounds.origin.y,
+                                     width: newFrameWidth,
+                                     height: self.indicatorLabelWhite.bounds.size.height)
+    }
+    
+    func prepareMask() {
         
         viewMask.frame = CGRect(
             x: indicatorLabelWhite.bounds.origin.x,
@@ -86,40 +105,7 @@ class AudioStoriesViewCell: BaseViewCell {
         
         viewMask.backgroundColor = .black
         indicatorLabelWhite.mask = viewMask
-        
-        indicatorLabelWhite.layer.timeOffset = 0
-        indicatorLabelWhite.layer.speed = 1
-        indicatorLabelWhite.layer.beginTime = 0
-    }
-    
-    func startAnimation(audioPlayer: AVAudioPlayer?) {
-        
-        isAnimationStarted = true
-        self.layoutIfNeeded()
-        UIView.animate(withDuration: audioPlayer!.duration, animations: {
-            self.viewMask.frame = CGRect(x: self.indicatorLabelWhite.bounds.origin.x, y: self.indicatorLabelWhite.bounds.origin.y, width: self.indicatorLabelWhite.bounds.size.width, height: self.indicatorLabelWhite.bounds.size.height)
-        }, completion: {_ in 
-            self.prepareForAnimation()
-            self.isAnimationStarted = false
-        })
-        self.layoutIfNeeded()
-    }
-    
-    func resumeAnimation(){
-        
-        let pausedTime = indicatorLabelWhite.layer.timeOffset
-        indicatorLabelWhite.layer.timeOffset = pausedTime
-        indicatorLabelWhite.layer.speed = 1
-        indicatorLabelWhite.layer.beginTime = 0
-        let timeSincePause = indicatorLabelWhite.layer.convertTime(CACurrentMediaTime(), from: nil) - pausedTime
-        indicatorLabelWhite.layer.beginTime = timeSincePause
-    }
-    
-    func pauseAnimation(){
-        
-        let pausedTime = indicatorLabelWhite.layer.convertTime(CACurrentMediaTime(), from: nil)
-        indicatorLabelWhite.layer.speed = 0
-        indicatorLabelWhite.layer.timeOffset = pausedTime
+
     }
     
     func setModel(model: AudioCardsModel) {
@@ -128,5 +114,37 @@ class AudioStoriesViewCell: BaseViewCell {
         indicatorLabelBlack.text = model.cardTitle
         audioFile = model.audioFile  
     }
+    
+    
+    
+//    func startAnimation(audioPlayer: AVAudioPlayer?) {
+//
+//        isAnimationStarted = true
+//        self.layoutIfNeeded()
+//        UIView.animate(withDuration: audioPlayer!.duration, animations: {
+//            self.viewMask.frame = CGRect(x: self.indicatorLabelWhite.bounds.origin.x, y: self.indicatorLabelWhite.bounds.origin.y, width: self.indicatorLabelWhite.bounds.size.width, height: self.indicatorLabelWhite.bounds.size.height)
+//        }, completion: {_ in
+//            self.prepareForAnimation()
+//            self.isAnimationStarted = false
+//        })
+//        self.layoutIfNeeded()
+//    }
+//
+//    func resumeAnimation(){
+//
+//        let pausedTime = indicatorLabelWhite.layer.timeOffset
+//        indicatorLabelWhite.layer.timeOffset = pausedTime
+//        indicatorLabelWhite.layer.speed = 1
+//        indicatorLabelWhite.layer.beginTime = 0
+//        let timeSincePause = indicatorLabelWhite.layer.convertTime(CACurrentMediaTime(), from: nil) - pausedTime
+//        indicatorLabelWhite.layer.beginTime = timeSincePause
+//    }
+//
+//    func pauseAnimation(){
+//
+//        let pausedTime = indicatorLabelWhite.layer.convertTime(CACurrentMediaTime(), from: nil)
+//        indicatorLabelWhite.layer.speed = 0
+//        indicatorLabelWhite.layer.timeOffset = pausedTime
+//    }
     
 }

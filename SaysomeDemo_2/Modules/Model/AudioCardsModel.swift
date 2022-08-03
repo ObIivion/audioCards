@@ -14,7 +14,7 @@ struct AudioCardsModel {
 
 extension ViewController {
     
-    func addDataToCards(){
+    func addDataToCards() {
         
         audioCards.append(contentsOf: [
             .init(cardTitle: "Речь - Сплинтера", audioFile: Files.audioExample1),
