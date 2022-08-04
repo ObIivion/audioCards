@@ -9,6 +9,6 @@ import Foundation
 
 extension Bundle {
     
-    static let current = Bundle(for: AppDelegate.self)
+    static let current = Bundle.main
     
 }

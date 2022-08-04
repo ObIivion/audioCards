@@ -16,14 +16,26 @@ class ViewController: BaseViewController<AudioStoriesView>, ProgressCellDelegate
     
     private var audioPlayer = AVAudioPlayer()
     
-    private var currentCell = AudioStoriesViewCell()
+    private var currentCell: AudioStoriesViewCell {
+        
+        let centerXofVisibleCells = mainView.audioCardsCollectionView.contentOffset.x + mainView.audioCardsCollectionView.frame.size.width / 2
+        var cureCell = AudioStoriesViewCell()
+        
+        mainView.audioCardsCollectionView.visibleCells.forEach { cell in
+
+            if cell.frame.midX - centerXofVisibleCells < 1 && cell.frame.midX - centerXofVisibleCells > -1 {
+                cureCell = cell as! AudioStoriesViewCell
+            }
+        }
+        return cureCell
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         mainView.backgroundColor = .darkGray
         
-        addDataToCards()
+        audioCards = AudioCardsModel.exampleData
         
         mainView.audioCardsCollectionView.delegate = self
         mainView.audioCardsCollectionView.dataSource = self
@@ -73,12 +85,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AudioStoriesViewCell.identifier, for: indexPath) as! AudioStoriesViewCell
         
         cell.prepareMask()
-        cell.setModel(model: audioCards.at(indexPath.item)!)
-        if indexPath.section == 0 && indexPath.item == 0 {
-            currentCell = cell
-            currentCell.delegate = self
-            setupAudioPlayer(for: currentCell.audioFile)
-        }
+        cell.setModel(model: audioCards[indexPath.item])
         
         return cell
     }
@@ -98,19 +105,12 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         
-        let myCollection = scrollView as! UICollectionView
+        currentCell.delegate = self
+        let index = mainView.audioCardsCollectionView.indexPath(for: currentCell)!.item
+        setupAudioPlayer(for: audioCards[index].audioFile)
+        audioPlayer.play()
+        updateTimeProgress()
         
-        let centerXofVisibleCells = myCollection.contentOffset.x + myCollection.frame.size.width / 2
-        myCollection.visibleCells.forEach { cell in
-
-            if cell.frame.midX - centerXofVisibleCells < 1 && cell.frame.midX - centerXofVisibleCells > -1 {
-                currentCell = cell as! AudioStoriesViewCell
-                currentCell.delegate = self
-                setupAudioPlayer(for: currentCell.audioFile)
-                audioPlayer.play()
-                updateTimeProgress()
-            }
-        }
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

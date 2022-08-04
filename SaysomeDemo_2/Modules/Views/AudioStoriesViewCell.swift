@@ -24,8 +24,6 @@ class AudioStoriesViewCell: BaseViewCell {
     private let viewMask = UIView()
     private let gradient = CAGradientLayer()
     
-    var audioFile = URL(fileURLWithPath: "")
-    
     private let indicatorLabelWhite: UILabel = {
         let view = UILabel()
         view.font = UIFont.systemFont(ofSize: 30)
@@ -110,6 +108,5 @@ class AudioStoriesViewCell: BaseViewCell {
         
         indicatorLabelWhite.text = model.cardTitle
         indicatorLabelBlack.text = model.cardTitle
-        audioFile = model.audioFile  
     }
 }
