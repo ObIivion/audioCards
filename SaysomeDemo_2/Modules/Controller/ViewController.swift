@@ -10,9 +10,9 @@ import AVFoundation
 
 class ViewController: BaseViewController<AudioStoriesView>, ProgressCellDelegate {
     
-    var progress: Double = 0.0
+    internal var progress: Double = 0.0
     
-    var audioCards: [AudioCardsModel] = []
+    internal var audioCards: [AudioCardsModel] = []
     
     private var audioPlayer = AVAudioPlayer()
     
@@ -33,7 +33,6 @@ class ViewController: BaseViewController<AudioStoriesView>, ProgressCellDelegate
     private func setupAudioPlayer(for url: URL) {
         
         let audioSession = AVAudioSession.sharedInstance()
-        
         do {
             try audioSession.setCategory(.playback, mode: .default)
             try audioSession.setActive(true)
@@ -46,15 +45,14 @@ class ViewController: BaseViewController<AudioStoriesView>, ProgressCellDelegate
         }
     }
     
-    func updateTime(){
+    func updateTimeProgress(){
         
         if audioPlayer.isPlaying {
             
             progress = audioPlayer.currentTime / audioPlayer.duration
             currentCell.updateMask()
-            print("progress updated: \(progress * 100)" )
             DispatchQueue.main.async { [weak self] in
-                self?.updateTime()
+                self?.updateTimeProgress()
             }
         }
     }
@@ -75,7 +73,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AudioStoriesViewCell.identifier, for: indexPath) as! AudioStoriesViewCell
         
         cell.prepareMask()
-        cell.setModel(model: audioCards[indexPath.item])
+        cell.setModel(model: audioCards.at(indexPath.item)!)
         if indexPath.section == 0 && indexPath.item == 0 {
             currentCell = cell
             currentCell.delegate = self
@@ -89,13 +87,9 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
         
         if !audioPlayer.isPlaying  {
             audioPlayer.play()
-            updateTime()
-            print("resume animation")
+            updateTimeProgress()
         } else {
             audioPlayer.pause()
-            
-            print("pause animation")
-            print(progress * 100)
         }
     }
 }
@@ -114,7 +108,7 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
                 currentCell.delegate = self
                 setupAudioPlayer(for: currentCell.audioFile)
                 audioPlayer.play()
-                updateTime()
+                updateTimeProgress()
             }
         }
     }
