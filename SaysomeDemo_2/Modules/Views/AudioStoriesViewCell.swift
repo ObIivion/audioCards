@@ -8,16 +8,7 @@
 import UIKit
 import AVFoundation
 
-protocol ProgressCellDelegate {
-    
-    func updateTimeProgress()
-    var progress: Double {get set}
-    
-}
-
 class AudioStoriesViewCell: BaseViewCell {
-    
-    var delegate: ProgressCellDelegate?
     
     static let identifier = "Audio Cell"
     
@@ -80,11 +71,9 @@ class AudioStoriesViewCell: BaseViewCell {
         ])
     }
     
-    func updateMask() {
+    func updateMask(progress: Double) {
         
-        guard let unwrappedDelegate = delegate else {return}
-        
-        let newFrameWidth = indicatorLabelWhite.bounds.size.width * unwrappedDelegate.progress
+        let newFrameWidth = indicatorLabelWhite.bounds.size.width * CGFloat(progress)
         
         self.viewMask.frame = CGRect(x: self.indicatorLabelWhite.bounds.origin.x,
                                      y: self.indicatorLabelWhite.bounds.origin.y,

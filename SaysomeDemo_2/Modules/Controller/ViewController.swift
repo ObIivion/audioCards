@@ -8,11 +8,9 @@
 import UIKit
 import AVFoundation
 
-class ViewController: BaseViewController<AudioStoriesView>, ProgressCellDelegate {
+class ViewController: BaseViewController<AudioStoriesView> {
     
-    internal var progress: Double = 0.0
-    
-    internal var audioCards: [AudioCardsModel] = []
+    var audioCards: [AudioCardsModel] = []
     
     private var audioPlayer = AVAudioPlayer()
     
@@ -60,9 +58,7 @@ class ViewController: BaseViewController<AudioStoriesView>, ProgressCellDelegate
     func updateTimeProgress(){
         
         if audioPlayer.isPlaying {
-            
-            progress = audioPlayer.currentTime / audioPlayer.duration
-            currentCell.updateMask()
+            currentCell.updateMask(progress: audioPlayer.currentTime / audioPlayer.duration)
             DispatchQueue.main.async { [weak self] in
                 self?.updateTimeProgress()
             }
@@ -105,7 +101,6 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         
-        currentCell.delegate = self
         let index = mainView.audioCardsCollectionView.indexPath(for: currentCell)!.item
         setupAudioPlayer(for: audioCards[index].audioFile)
         audioPlayer.play()
